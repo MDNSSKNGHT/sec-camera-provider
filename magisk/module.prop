@@ -1,0 +1,6 @@
+id=vendor-samsung-hardware-camera-provider-service-injector
+name=Samsung's Camera Provider Service Hack
+version=1.0
+versionCode=1
+author=MDNSSKNGHT
+description=Hack into camera process to runtime patch binaries.
