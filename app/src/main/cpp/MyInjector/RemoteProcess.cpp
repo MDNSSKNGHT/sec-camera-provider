@@ -29,7 +29,7 @@ bool RemoteProcess::Detach() {
     return i_ptrace(PTRACE_DETACH, pid, 0, 0) == 0;
 }
 
-bool RemoteProcess::Call(uintptr_t address, long *ret, long *argv, size_t argc) {
+bool RemoteProcess::Call(FunctionInfo info, long *ret, long *argv, size_t argc) {
     struct user_pt_regs cRegs, bRegs;
 
     if (!GetRegs(&cRegs)) {
@@ -50,7 +50,7 @@ bool RemoteProcess::Call(uintptr_t address, long *ret, long *argv, size_t argc) 
 
     constexpr auto CPSR_T_MASK = (1u << 5);
 
-    cRegs.pc = address;
+    cRegs.pc = GetRemoteFunctionAddress(info);
     if (cRegs.pc & 1) {
         // Thumb
         cRegs.pc &= (~1u);
@@ -142,6 +142,13 @@ bool RemoteProcess::Read(uintptr_t address, uint8_t *data, size_t size) {
     }
 
     return true;
+}
+
+uintptr_t RemoteProcess::GetRemoteFunctionAddress(FunctionInfo info) {
+    uintptr_t pModule = GetModuleBase(info.module, false);
+    uintptr_t rModule = GetModuleBase(info.module);
+
+    return rModule + (info.pAddress - pModule);
 }
 
 uintptr_t RemoteProcess::GetModuleBase(std::string module, bool remote) {

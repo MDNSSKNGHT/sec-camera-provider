@@ -8,16 +8,22 @@
 #include <string>
 #include <sys/types.h>
 
+struct FunctionInfo {
+    std::string module;
+    uintptr_t pAddress;
+};
+
 struct RemoteProcess {
 public:
     RemoteProcess(pid_t p) : pid(p) {}
     bool Attach();
     bool Detach();
-    bool Call(uintptr_t address, long *ret, long argv[], size_t argc);
+    bool Call(FunctionInfo info, long *ret, long argv[], size_t argc);
     bool Write(uintptr_t address, uint8_t *data, size_t size);
     bool Read(uintptr_t address, uint8_t *data, size_t size);
-    uintptr_t GetModuleBase(std::string module, bool remote = true);
 private:
+    uintptr_t GetRemoteFunctionAddress(FunctionInfo info);
+    uintptr_t GetModuleBase(std::string module, bool remote = true);
     bool Continue();
     bool Wait(int *status);
     bool GetRegs(struct user_pt_regs *regs);
