@@ -1,0 +1,30 @@
+import glob
+import shutil
+import subprocess
+import tempfile
+
+# CONSTANTS
+INTERMEDIATES_CXX = "app/build/intermediates/cxx"
+BINARIES = ["vendor_samsung_hardware_camera_provider_4_0_service",
+            "vendor.samsung.hardware.camera.provider@4.0-service_64"]
+
+# COMPILE CXX
+subprocess.call(['./gradlew', 'buildCMakeRelWithDebInfo'])
+
+# ZIP MODULE
+with tempfile.TemporaryDirectory() as tmp_dir:
+    shutil.copytree('magisk', tmp_dir, dirs_exist_ok=True)
+    shutil.copytree('sepolicy', tmp_dir, dirs_exist_ok=True)
+    shutil.copytree('blob', tmp_dir, dirs_exist_ok=True)
+
+    shutil.copy(glob.glob(INTERMEDIATES_CXX + '/RelWithDebInfo/*/obj/arm64-v8a/' + BINARIES[0]).pop(),
+                tmp_dir + "/system/vendor/bin/hw/" + BINARIES[1])
+    shutil.copy(glob.glob(INTERMEDIATES_CXX + '/RelWithDebInfo/*/obj/arm64-v8a/*.so').pop(),
+                tmp_dir + '/system/vendor/lib64')
+
+    shutil.make_archive("Module", 'zip', tmp_dir)
+
+# INSTALL MODULE
+subprocess.call(["adb", "push", "Module.zip", "/sdcard/Download"])
+subprocess.call(["adb", "shell", "su", "-c", "magisk", "--install-module", "/sdcard/Download/Module.zip"])
+subprocess.call(["adb", "reboot"])
