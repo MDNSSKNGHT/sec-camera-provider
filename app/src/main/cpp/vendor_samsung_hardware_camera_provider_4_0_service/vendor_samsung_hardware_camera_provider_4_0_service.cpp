@@ -5,7 +5,7 @@
 #include <thread>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "../MyInjector/Injector.h"
+#include "../MyInjector/Injector.hpp"
 
 #define LOG_TAG "vendor.samsung.hardware.camera.provider@4.0-service"
 #include "../include/logging.h"

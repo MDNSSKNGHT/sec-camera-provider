@@ -7,7 +7,7 @@
 #include <sys/uio.h>
 #include <sys/wait.h>
 #include <fstream>
-#include "RemoteProcess.h"
+#include "RemoteProcess.hpp"
 
 #define LOG_TAG "MyRemoteProcess"
 #include "../include/logging.h"

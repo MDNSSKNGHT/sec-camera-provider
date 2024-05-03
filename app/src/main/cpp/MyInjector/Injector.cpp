@@ -4,8 +4,8 @@
 
 #include <dlfcn.h>
 #include <sys/mman.h>
-#include "RemoteProcess.h"
-#include "Injector.h"
+#include "RemoteProcess.hpp"
+#include "Injector.hpp"
 
 #define LOG_TAG "MyInjector"
 #include "../include/logging.h"
