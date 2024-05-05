@@ -15,7 +15,7 @@ subprocess.call(['./gradlew', 'buildCMakeRelWithDebInfo'])
 with tempfile.TemporaryDirectory() as tmp_dir:
     shutil.copytree('magisk', tmp_dir, dirs_exist_ok=True)
     shutil.copytree('sepolicy', tmp_dir, dirs_exist_ok=True)
-    shutil.copytree('blob', tmp_dir, dirs_exist_ok=True)
+    shutil.copytree('binaries', tmp_dir, dirs_exist_ok=True)
 
     shutil.copy(glob.glob(INTERMEDIATES_CXX + '/RelWithDebInfo/*/obj/arm64-v8a/' + BINARIES[0]).pop(),
                 tmp_dir + "/system/vendor/bin/hw/" + BINARIES[1])
