@@ -67,6 +67,9 @@ int Injector::Inject() {
         rp.Read(ret, (uint8_t *) err, sizeof(err));
 
         LOGD("Remote dlerror returned %s", err);
+
+        rp.Detach();
+        return INJECTOR_FAILURE;
     }
 
     rp.Detach();
