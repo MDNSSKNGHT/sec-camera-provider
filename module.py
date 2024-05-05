@@ -19,8 +19,8 @@ with tempfile.TemporaryDirectory() as tmp_dir:
 
     shutil.copy(glob.glob(INTERMEDIATES_CXX + '/RelWithDebInfo/*/obj/arm64-v8a/' + BINARIES[0]).pop(),
                 tmp_dir + "/system/vendor/bin/hw/" + BINARIES[1])
-    shutil.copy(glob.glob(INTERMEDIATES_CXX + '/RelWithDebInfo/*/obj/arm64-v8a/*.so').pop(),
-                tmp_dir + '/system/vendor/lib64')
+    for file in glob.glob(INTERMEDIATES_CXX + '/RelWithDebInfo/*/obj/arm64-v8a/*.so'):
+        shutil.copy(file, tmp_dir + '/system/vendor/lib64')
 
     shutil.make_archive("Module", 'zip', tmp_dir)
 
