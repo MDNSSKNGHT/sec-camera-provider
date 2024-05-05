@@ -1,4 +1,5 @@
 import glob
+import os
 import shutil
 import subprocess
 import tempfile
@@ -16,6 +17,7 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     shutil.copytree('magisk', tmp_dir, dirs_exist_ok=True)
     shutil.copytree('sepolicy', tmp_dir, dirs_exist_ok=True)
     shutil.copytree('binaries', tmp_dir, dirs_exist_ok=True)
+    os.makedirs(tmp_dir + '/system/vendor/lib64')
 
     shutil.copy(glob.glob(INTERMEDIATES_CXX + '/RelWithDebInfo/*/obj/arm64-v8a/' + BINARIES[0]).pop(),
                 tmp_dir + "/system/vendor/bin/hw/" + BINARIES[1])
