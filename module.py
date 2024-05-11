@@ -14,7 +14,7 @@ subprocess.call(['./gradlew', 'buildCMakeRelWithDebInfo'])
 
 # ZIP MODULE
 with tempfile.TemporaryDirectory() as tmp_dir:
-    shutil.copytree('magisk', tmp_dir, dirs_exist_ok=True)
+    shutil.copytree('module', tmp_dir, dirs_exist_ok=True)
     shutil.copytree('sepolicy', tmp_dir, dirs_exist_ok=True)
     shutil.copytree('binaries', tmp_dir, dirs_exist_ok=True)
     os.makedirs(tmp_dir + '/system/vendor/lib64')
@@ -27,6 +27,6 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     shutil.make_archive("Module", 'zip', tmp_dir)
 
 # INSTALL MODULE
-subprocess.call(["adb", "push", "Module.zip", "/sdcard/Download"])
-subprocess.call(["adb", "shell", "su", "-c", "magisk", "--install-module", "/sdcard/Download/Module.zip"])
+subprocess.call(["adb", "push", "Module.zip", "/data/local/tmp"])
+subprocess.call(["adb", "shell", "su", "-c", "ksud", "module", "install", "/data/local/tmp/Module.zip"])
 subprocess.call(["adb", "reboot"])
