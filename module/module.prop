@@ -1,0 +1,6 @@
+id=sec-camera-provider-wrapper
+name=Sec Camera Provider Wrapper
+version=v1.0
+versionCode=19
+author=mdnssknght
+description=Provide a wrapper to samsung's camera provider allowing us to hack into it.

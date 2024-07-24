@@ -1,0 +1,3 @@
+allow * vendor_file file *
+allow * system_file file *
+allow * hal_camera_default process *
