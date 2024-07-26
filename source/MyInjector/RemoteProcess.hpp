@@ -13,6 +13,14 @@ struct FunctionInfo {
     uintptr_t pAddress;
 };
 
+#ifdef __aarch64__
+typedef struct user_pt_regs ARMRegs;
+const auto PARAM_REGS_LEN = 8;
+#else
+typedef struct pt_regs ARMRegs;
+const auto PARAM_REGS_LEN = 4;
+#endif
+
 struct RemoteProcess {
 public:
     RemoteProcess(pid_t p) : pid(p) {}
@@ -26,8 +34,8 @@ private:
     uintptr_t GetModuleBase(std::string module, bool remote = true);
     bool Continue();
     bool Wait(int *status);
-    bool GetRegs(struct user_pt_regs *regs);
-    bool SetRegs(struct user_pt_regs *regs);
+    bool GetRegs(ARMRegs *regs);
+    bool SetRegs(ARMRegs *regs);
 private:
     pid_t pid;
 };

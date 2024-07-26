@@ -31,7 +31,7 @@ bool RemoteProcess::Detach() {
 }
 
 bool RemoteProcess::Call(FunctionInfo info, long *ret, long *argv, size_t argc) {
-    struct user_pt_regs cRegs, bRegs;
+    ARMRegs cRegs, bRegs;
 
     if (!GetRegs(&cRegs)) {
         LOGE("Failed to get registers");
@@ -39,19 +39,35 @@ bool RemoteProcess::Call(FunctionInfo info, long *ret, long *argv, size_t argc) 
     }
     std::memcpy(&bRegs, &cRegs, sizeof(bRegs));
 
-    for (int i = 0; i < argc; i++) {
+    for (int i = 0; i < argc && i < PARAM_REGS_LEN; i++) {
+#ifdef __aarch64__
         cRegs.regs[i] = argv[i];
+#else
+        cRegs.uregs[i] = argv[i];
+#endif
     }
 
-    // Here we'd check if the `argc` exceeds the maximum parameter count supported
-    // by aarch64 and push the remaining parameters into the stack. But we'll skip
-    // that part as this implementation is not ready to be publicly released.
+    if (argc > PARAM_REGS_LEN) {
+#ifdef __aarch64__
+        cRegs.sp -= (PARAM_REGS_LEN - argc) * sizeof(long);
 
-    // TODO: push remaining arguments into the stack
+        Write(cRegs.sp, (uint8_t *) &argv[PARAM_REGS_LEN], (argc - PARAM_REGS_LEN) * sizeof(long));
+#else
+        cRegs.ARM_sp -= (PARAM_REGS_LEN - argc) * sizeof(long);
+
+        Write(cRegs.ARM_sp, (uint8_t *) &argv[PARAM_REGS_LEN], (argc - PARAM_REGS_LEN) * sizeof(long));
+#endif
+    }
 
     constexpr auto CPSR_T_MASK = (1u << 5);
 
+#ifdef __aarch64__
     cRegs.pc = GetRemoteFunctionAddress(info);
+#else
+    cRegs.ARM_pc = GetRemoteFunctionAddress(info);
+#endif
+
+#ifdef __aarch64__
     if (cRegs.pc & 1) {
         // Thumb
         cRegs.pc &= (~1u);
@@ -60,8 +76,22 @@ bool RemoteProcess::Call(FunctionInfo info, long *ret, long *argv, size_t argc) 
         // ARM
         cRegs.pstate &= ~CPSR_T_MASK;
     }
+#else
+    if (cRegs.ARM_pc & 1) {
+        // Thumb
+        cRegs.ARM_pc &= (~1u);
+        cRegs.ARM_cpsr |= CPSR_T_MASK;
+    } else {
+        // ARM
+        cRegs.ARM_cpsr &= ~CPSR_T_MASK;
+    }
+#endif
 
+#ifdef __aarch64__
     cRegs.regs[30] = GetModuleBase("libc.so");
+#else
+    cRegs.ARM_lr = GetModuleBase("libc.so");
+#endif
 
     if (!SetRegs(&cRegs) || !Continue()) {
         LOGE("Failed to set registers or continue target process");
@@ -85,7 +115,11 @@ bool RemoteProcess::Call(FunctionInfo info, long *ret, long *argv, size_t argc) 
         return false;
     }
 
+#ifdef __aarch64__
     *ret = cRegs.regs[0];
+#else
+    *ret = cRegs.ARM_r0;
+#endif
 
     if (!SetRegs(&bRegs)) {
         LOGE("Failed to set backup registers after call");
@@ -177,20 +211,28 @@ bool RemoteProcess::Wait(int *status) {
     return waitpid(pid, status, WUNTRACED) == pid;
 }
 
-bool RemoteProcess::GetRegs(struct user_pt_regs *regs) {
+bool RemoteProcess::GetRegs(ARMRegs *regs) {
+#ifdef __aarch64__
     struct iovec iov;
 
     iov.iov_base = regs;
     iov.iov_len = sizeof(*regs);
 
     return i_ptrace(PTRACE_GETREGSET, pid, (void *) NT_PRSTATUS, &iov) == 0;
+#else
+    return i_ptrace(PTRACE_GETREGS, pid, NULL, regs) == 0;
+#endif
 }
 
-bool RemoteProcess::SetRegs(struct user_pt_regs *regs) {
+bool RemoteProcess::SetRegs(ARMRegs *regs) {
+#ifdef __aarch64__
     struct iovec iov;
 
     iov.iov_base = regs;
     iov.iov_len = sizeof(*regs);
 
     return i_ptrace(PTRACE_SETREGSET, pid, (void *) NT_PRSTATUS, &iov) == 0;
+#else
+    return i_ptrace(PTRACE_SETREGS, pid, NULL, regs) == 0;
+#endif
 }
