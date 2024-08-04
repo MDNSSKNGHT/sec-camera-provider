@@ -10,7 +10,8 @@ def main():
         shutil.copytree("module", tmp_dir, dirs_exist_ok=True)
         shutil.copytree("binaries", tmp_dir, dirs_exist_ok=True)
         shutil.copytree("sepolicy", tmp_dir, dirs_exist_ok=True)
-        os.makedirs(tmp_dir + "/system/vendor/lib64")
+        os.makedirs(f"{tmp_dir}/system/vendor/lib64")
+        os.makedirs(f"{tmp_dir}/system/vendor/bin/hw")
 
         project_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -20,6 +21,7 @@ def main():
         lib_path = []
         lib_path += glob.glob(f"{project_dir}/cmake-build-*/*.so")
         lib_path += glob.glob(f"{project_dir}/external/shadowhook/*/*.so")
+        lib_path += glob.glob(f"{project_dir}/external/mettle_libreflect/*/*.so")
 
         for lib in lib_path:
             shutil.copy(lib, f"{tmp_dir}/system/vendor/lib64")

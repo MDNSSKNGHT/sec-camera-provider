@@ -5,10 +5,13 @@
 #include <thread>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <reflect.h>
 #include <Injector.hpp>
 
 #define LOG_TAG "vendor.samsung.hardware.camera.provider@4.0-service"
 #include <logging.hpp>
+
+#include "sec_camera_provider.hpp"
 
 static void thread_task(pid_t pid) {
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -20,7 +23,7 @@ static void thread_task(pid_t pid) {
     LOGW("libmadness Injector: %d", i_lm.Inject());
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     pid_t pid;
     int status;
 
@@ -30,12 +33,14 @@ int main() {
 
         waitpid(pid, &status, 0);
     } else {
-        constexpr auto bin = "/"
+        /*constexpr auto bin = "/"
                              "vendor"   "/"
                              "bin"      "/"
                              "hw"       "/"
                              "vendor.samsung.hardware.camera.provider@4.0-service_64" "-backup";
 
-        return execl(bin, bin, nullptr);
+        return execl(bin, bin, nullptr);*/
+
+        reflect_execves(sec_camera_provider_4_0_bin_64, argv + 1, NULL, (size_t *) argv - 1);
     }
 }

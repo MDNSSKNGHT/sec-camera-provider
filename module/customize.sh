@@ -60,7 +60,6 @@ set_permissions() {
   # set_perm /data/local/tmp/file.txt 0 0 644
 
   set_perm $MODPATH/system/vendor/bin/hw/vendor.samsung.hardware.camera.provider@4.0-service_64 0 2000 0755 u:object_r:hal_camera_default_exec:s0
-  set_perm $MODPATH/system/vendor/bin/hw/vendor.samsung.hardware.camera.provider@4.0-service_64-backup 0 2000 0755
 }
 
 ##########################################################################################
