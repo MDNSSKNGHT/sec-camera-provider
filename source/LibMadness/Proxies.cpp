@@ -22,6 +22,7 @@ ExynosCameraSensorInfoBase *proxy_createExynosCameraSensorInfo(int cameraId, int
 }
 
 bool proxy_MoonVerifier_initialize(const std::string& json_data) {
+    SHADOWHOOK_STACK_SCOPE();
 
     LOGI("MoonVerifier::initialize() json data: %s", json_data.c_str());
 
