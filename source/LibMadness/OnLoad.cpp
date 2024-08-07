@@ -18,6 +18,11 @@ static void __attribute__((constructor)) OnLoad() {
                              "_ZN7android28createExynosCameraSensorInfoEii",
                              (void *) proxy_createExynosCameraSensorInfo,
                              nullptr);
+
+    shadowhook_hook_sym_name("/vendor/lib64/libMoonVerifier_v1.camera.samsung.so",
+                             "_ZN12MoonVerifier10initializeENSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE",
+                             (void *) proxy_MoonVerifier_initialize,
+                             nullptr);
 }
 
 static void __attribute__((destructor)) OnDestroy() {

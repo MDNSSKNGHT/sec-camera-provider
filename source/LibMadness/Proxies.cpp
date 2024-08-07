@@ -20,3 +20,10 @@ ExynosCameraSensorInfoBase *proxy_createExynosCameraSensorInfo(int cameraId, int
 
     return pSensorInfo;
 }
+
+bool proxy_MoonVerifier_initialize(const std::string& json_data) {
+
+    LOGI("MoonVerifier::initialize() json data: %s", json_data.c_str());
+
+    return false;
+}
