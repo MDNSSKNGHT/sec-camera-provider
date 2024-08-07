@@ -8,7 +8,6 @@ import tempfile
 def main():
     with (tempfile.TemporaryDirectory() as tmp_dir):
         shutil.copytree("module", tmp_dir, dirs_exist_ok=True)
-        shutil.copytree("binaries", tmp_dir, dirs_exist_ok=True)
         shutil.copytree("sepolicy", tmp_dir, dirs_exist_ok=True)
         os.makedirs(f"{tmp_dir}/system/vendor/lib64")
         os.makedirs(f"{tmp_dir}/system/vendor/bin/hw")
