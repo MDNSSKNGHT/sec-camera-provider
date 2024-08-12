@@ -28,7 +28,7 @@ def main():
         shutil.make_archive("Module", "zip", tmp_dir)
 
     subprocess.call(["adb", "push", "Module.zip", "/data/local/tmp"])
-    subprocess.call(["adb", "shell", "su", "-c", "ksud", "module", "install", "/data/local/tmp/Module.zip"])
+    subprocess.call(["adb", "shell", "su", "-c", "apd", "module", "install", "/data/local/tmp/Module.zip"])
     subprocess.call(["adb", "reboot"])
 
 
