@@ -56,34 +56,30 @@ def main():
         cmake_configure_and_build(
             project_dir=f"{project_dir}/source_deps/shadowhook-1.0.9",
             build_dir=f"{project_dir}/source_deps/build/shadowhook-1.0.9/{arch}",
-            output_dir=f"{project_dir}/external/shadowhook/{arch}",
+            output_dir=f"{project_dir}/external/{arch}/shadowhook",
             arch=arch)
-
-    shutil.copytree(f"{project_dir}/source_deps/shadowhook-1.0.9/include",
-                    f"{project_dir}/external/shadowhook/include", dirs_exist_ok=True)
-
-    cmake_create_package_file(
-        output_path=f"{project_dir}/external/shadowhook/shadowhookConfig.cmake",
-        cmake_target="shadowhook::shadowhook",
-        cmake_lib_path=f"{project_dir}/external/shadowhook/${{ANDROID_ABI}}/libshadowhook.so",
-        cmake_include_path=f"{project_dir}/external/shadowhook/include")
+        shutil.copytree(f"{project_dir}/source_deps/shadowhook-1.0.9/include",
+                        f"{project_dir}/external/{arch}/shadowhook/include", dirs_exist_ok=True)
+        cmake_create_package_file(
+            output_path=f"{project_dir}/external/{arch}/shadowhook/shadowhookConfig.cmake",
+            cmake_target="shadowhook::shadowhook",
+            cmake_lib_path=f"{project_dir}/external/{arch}/shadowhook/libshadowhook.so",
+            cmake_include_path=f"{project_dir}/external/{arch}/shadowhook/include")
 
     # libreflect
     for arch in ["armeabi-v7a", "arm64-v8a"]:
         cmake_configure_and_build(
             project_dir=f"{project_dir}/source_deps/mettle_libreflect",
             build_dir=f"{project_dir}/source_deps/build/mettle_libreflect/{arch}",
-            output_dir=f"{project_dir}/external/mettle_libreflect/{arch}",
+            output_dir=f"{project_dir}/external/{arch}/mettle_libreflect",
             arch=arch)
-
-    shutil.copytree(f"{project_dir}/source_deps/mettle_libreflect/include",
-                    f"{project_dir}/external/mettle_libreflect/include", dirs_exist_ok=True)
-
-    cmake_create_package_file(
-        output_path=f"{project_dir}/external/mettle_libreflect/mettle_libreflectConfig.cmake",
-        cmake_target="mettle_libreflect",
-        cmake_lib_path=f"{project_dir}/external/mettle_libreflect/${{ANDROID_ABI}}/libreflect.so",
-        cmake_include_path=f"{project_dir}/external/mettle_libreflect/include")
+        shutil.copytree(f"{project_dir}/source_deps/mettle_libreflect/include",
+                        f"{project_dir}/external/{arch}/mettle_libreflect/include", dirs_exist_ok=True)
+        cmake_create_package_file(
+            output_path=f"{project_dir}/external/{arch}/mettle_libreflect/mettle_libreflectConfig.cmake",
+            cmake_target="mettle_libreflect",
+            cmake_lib_path=f"{project_dir}/external/{arch}/mettle_libreflect/libreflect.so",
+            cmake_include_path=f"{project_dir}/external/{arch}/mettle_libreflect/include")
 
 
 if __name__ == "__main__":
