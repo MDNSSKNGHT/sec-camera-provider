@@ -50,8 +50,13 @@ void map_elf(const unsigned char *data, struct mapped_elf *obj) {
             total_to_map = ((phdr->p_vaddr + phdr->p_memsz) > total_to_map
                             ? phdr->p_vaddr + phdr->p_memsz
                             : total_to_map);
+#ifdef __aarch64__
             LOGI("total mapping is now %08zx based on %08llx seg at %p", total_to_map, phdr->p_memsz,
                  (void *) phdr->p_vaddr);
+#else
+            LOGI("total mapping is now %08zx based on %08x seg at %p", total_to_map, phdr->p_memsz,
+                 (void *) phdr->p_vaddr);
+#endif
         }
     }
 
