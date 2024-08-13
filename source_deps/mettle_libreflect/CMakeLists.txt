@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 3.22.1)
 project(mettle_libreflect)
 
 set(TARGET libreflect)
-set(ARCH aarch64)
+
+if (${ANDROID_ABI} STREQUAL "arm64-v8a")
+    set(ARCH aarch64)
+elseif (${ANDROID_ABI} STREQUAL "armeabi-v7a")
+    set(ARCH armv7a)
+endif ()
 
 file(GLOB SRC src/*.c)
 add_library(${TARGET} SHARED ${SRC})
