@@ -33,14 +33,6 @@ int main(int argc, char *argv[]) {
 
         waitpid(pid, &status, 0);
     } else {
-        /*constexpr auto bin = "/"
-                             "vendor"   "/"
-                             "bin"      "/"
-                             "hw"       "/"
-                             "vendor.samsung.hardware.camera.provider@4.0-service_64" "-backup";
-
-        return execl(bin, bin, nullptr);*/
-
-        reflect_execves(sec_camera_provider_4_0_bin_64, argv + 1, NULL, (size_t *) argv - 1);
+        reflect_execves(SEC_CAMERA_PROVIDER_BIN, argv + 1, NULL, (size_t *) argv - 1);
     }
 }
